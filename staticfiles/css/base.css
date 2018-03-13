@@ -1,0 +1,14 @@
+.chat-join, .chat-leave {
+    text-align: center;
+}
+
+.chat-message {
+    border-radius: 10px;
+}
+
+.form-login {
+    width: 100%;
+    max-width: 330px;
+    padding: 15px;
+    margin: 0 auto;
+}

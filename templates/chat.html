@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-lg-8 offset-lg-2">
+            <h1>Чат</h1>
+            <div id="chat_board"></div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-8 offset-lg-2">
+            <form>
+                <div class="form-group">
+                    <textarea id="message_text" class="form-control"></textarea>
+                </div>
+                <button id="btn_submit" class="btn btn-primary" type="button">Отправить</button>
+                <a href="/logout/" class="float-right">Покинуть</a>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script>
+        $(document).ready(function () {
+            var username = "{{ user.username }}";
+            var chat_board = $('#chat_board');
+            var message_text = $('#message_text');
+            var webSocket = new WebSocket('ws://' + window.location.host + '/chat/');
+
+            webSocket.onmessage = function (message) {
+                var data = JSON.parse(message.data);
+                var s;
+                if(data['type'] === 'message'){ // Пришло сообщение
+                    if(data.sender === username){  // Если сообщение ваше
+                        s = '<div class="row"><div class="col-10 offset-2">' +
+                            '<div class="bg-info text-light p-2 m-1 chat-message">' + data.message +
+                            '<br><strong>' + data.sender + '</strong></div></div></div>';
+                    }else{  // Если сообщение от собеседника
+                        s = '<div class="row"><div class="col-10">' +
+                            '<div class="bg-light p-2 m-1 chat-message">' + data.message +
+                            '<br><strong>' + data.sender + '</strong></div></div></div>';
+                    }
+                }else if(data['type'] === 'join'){  // Кто-то присоединился к чату
+                    s = '<div class="row"><div class="col-12"><div class="m-1 chat-join">' +
+                        '<strong>'+data.sender+'</strong> присоединился к чату</div></div>';
+                }else if(data['type'] === 'leave'){  // Кто-то покинул чат
+                    s = '<div class="row"><div class="col-12"><div class="m-1 chat-join">' +
+                        '<strong>'+data.sender+'</strong> покинул чат</div></div>';
+                }
+                chat_board.append(s);
+            };
+            $('#btn_submit').click(function (e) {
+                var message = JSON.stringify({'text': message_text.val()});
+                webSocket.send(message);
+            })
+        })
+    </script>
+{% endblock %}
