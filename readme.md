@@ -19,23 +19,31 @@ http://localhost:8001/admin/.
 1) Установить python 3.5 или выше
 2) Установить redis
 3) Корневую папку проекта открыть в терминале или командной строке
-4) Установить зависимости для python
+4) Для платформы windows необходимо установить pypiwin32
     ```bash
-    pip install -r requirements.txt
+	pip install --no-cache-dir pypiwin32
+	```
+5) Установить зависимости для python
+    ```bash
+    pip install --no-cache-dir -r requirements.txt
     ```
-5) Выполнить миграции
+6) Выполнить миграции
     ```bash
     python manage.py migrate
     ```
-6) Добавить пользователей в базу данных
+7) Выполнить миграции
+    ```bash
+    python manage.py collectstatic
+    ```
+8) Добавить пользователей в базу данных
     ```bash
     python manage.py loaddata users.json
     ```
-7) Запустить сервер
+9) Запустить сервер
     ```bash
     daphne -p 8001 asgi:application
     ```
-8) Открыть в браузере страницу с адресом http://localhost:8001/
+10) Открыть в браузере страницу с адресом http://localhost:8001/
 
 ## Пользователи для авторизации в чате
 
